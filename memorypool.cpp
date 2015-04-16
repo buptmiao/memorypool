@@ -1,8 +1,9 @@
 #include <iostream>
 #include "memorypool.h"
 
-/* 内存块类构造函数
- * 
+/* 功能：内存块类构造函数
+ * 参数：n 存储单元数量，unitsize每个存储单元大小
+ * 返回值：无
  */
 MemoryBlock::MemoryBlock(ushort n,ushort unitsize)
 	:size(n * unitsize),numfree(n-1),first(1),next(NULL)
@@ -16,31 +17,50 @@ MemoryBlock::MemoryBlock(ushort n,ushort unitsize)
 	}
 }
 
+
+/* 功能：重载MemoryBlock的new操作符
+ * 参数：_size 存储单元数量，_unitsize每个存储单元大小
+ * 返回值：分配内存的指针
+ */
 static void * MemoryBlock::operator new(size_t , ushort _size , ushort _unitsize){
 	return ::operator new(sizeof(MemoryBlock) + _size * _unitsize);
 }
 
+/* 功能：重载MemoryBlock的delete操作符
+ * 参数：将释放的指针
+ * 返回值：无
+ */
 static void MemoryBlock::operator delete(void *p,size_t){
 	::operator delete (p);
 }
 
-/*
- * 
+
+/* 功能：内存池构造函数
+ * 参数：_unitsize单元大小，_initsize初始化分配的大小，_growsize扩展大小,_prealloc预分配标志
+ * 返回值：无
  */
- 
 MemoryPool::MemoryPool(ushort _unitsize,ushort _initsize,ushort _growsize,bool _prealloc)
 	:pMem(NULL),unitsize(_unitsize),initsize(_initsize),growsize(_growsize),prealloc(_prealloc)
 {
+	/*对unitsize进行调整*/
 	if(_unitsize > 4)
 		unitsize = (_unitsize + (MEMPOOL_ALIGNMENT)-1) &~ (MEMPOOL_ALIGNMENT-1);
 	else if(_unitsize <= 2)
 		unitsize = 2;
 	else
 		unitsize = 4;
-	if(_prealloc)
+	/*预分配内存*/
+	if(_prealloc){
 		Alloc();
+		pMem->first = 0;
+		pMem->numfree = initsize;
+	}
 }
 
+/* 功能：内存池析构函数，清楚内存池所分配的所有内存块
+ * 参数：n 无
+ * 返回值：无
+ */
 MemoryPool::~MemoryPool(){
 	while(pMem){
 		MemoryBlock *tmp = pMem;
@@ -49,8 +69,12 @@ MemoryPool::~MemoryPool(){
 	}
 }
 
+/* 功能：内存池分配函数，分配固定大小的内存
+ * 参数：无
+ * 返回值：分配内存的指针
+ */
 void * MemoryPool::Alloc(){
-	if(!pMem){//尚未开内存
+	if(!pMem){//尚未分配内存
 		pMem = new(initsize,unitsize) MemoryBlock(initsize,unitsize);
 		if(!pMem)
 			return NULL;
@@ -80,9 +104,11 @@ void * MemoryPool::Alloc(){
 	}
 }
 
-//当然，这时应该还需要检查pMyBlock为NULL时的情形，
-//即pFree不属于此内存池的范围，因此不能返回给此内存池，读者可以自行加上
 
+/* 功能：内存池释放内存函数
+ * 参数：待释放内存单元的指针
+ * 返回值：无
+ */
 void MemoryPool::Free(void *pfree){
 	MemoryBlock *ptmp = pMem;
 	MemoryBlock *prev = pMem; //记录ptmp前一个内存块的地址，在修改表结构的时候会用到
