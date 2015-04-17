@@ -49,13 +49,13 @@ delete p;
 using memorypool...  
 start time is: 1429239289  
 end   time is: 1429239304  
-total time is: *15 seconds*
+total time is: _15 seconds_
 
 使用标准操作符：  
 using standard new...  
 start time is: 1429239423  
 end   time is: 1429239463  
-total time is: *40 seconds_  
+total time is: _40 seconds_  
 
 测试环境：windows 7
 
