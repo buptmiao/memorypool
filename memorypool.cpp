@@ -85,7 +85,7 @@ void * MemoryPool::Alloc(){
 	while(ptmp && !ptmp->numfree)
 		ptmp = ptmp->next;
 		
-	if(ptmp){ //找到内存单元
+	if(ptmp){ //找到内存块
 		char *pfree = ptmp->Data + ptmp->first*unitsize;
 		ptmp->first = *((ushort *)pfree);//更新first为pfree中的前2字节，即下一个空闲块
 		ptmp->numfree--; //空闲单元--
