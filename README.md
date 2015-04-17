@@ -5,9 +5,9 @@
 
 1、为使用内存池的类对象重载new/delete操作符，静态成员M_pool为指向内存池对象的指针
 使用时需要定义一个内存池类对象，并用其地址初始化M_pool。例如：
-
+[code]
 Test::M_pool = new MemoryPool(sizeof(Test));
-
+[/code]
 Test是使用内存池的类，M_pool是该类定义的静态成员，sizeof(Test)实参是初始化内存池中
 一个内存单元的大小。
 
