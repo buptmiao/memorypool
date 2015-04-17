@@ -44,13 +44,13 @@ delete p;
 
 通过简单的程序测试，得到两组数据，可以看出使用内存池和不使用内存池性能上的差异
 
-使用内存池：
+使用内存池：  
 using memorypool...  
 start time is: 1429239289  
 end   time is: 1429239304  
 total time is: 15 seconds  
 
-使用标准操作符：
+使用标准操作符：  
 using standard new...  
 start time is: 1429239423  
 end   time is: 1429239463  
