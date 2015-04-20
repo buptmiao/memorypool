@@ -7,7 +7,6 @@ objs  := $(patsubst %.cpp, %.o, $(srcs))
 
 CXX := g++
 CXXFLAGS := -Wall -O
-LDFLAGS := -lpthread
 
 all : main
 .PHONY : all
@@ -20,10 +19,7 @@ main : $(objs)
 .PHONY : log_clean clean print
 print :
 	echo $(objs)
-    
-log_clean:
-	-rm *_log
-
+ 
 clean:
 	-rm main *.o *~
 
